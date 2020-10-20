@@ -2,7 +2,7 @@ package commands
 
 import (
 	"errors"
-	"myTest/src/bot/request"
+	"myTest/src/request"
 	"regexp"
 )
 
