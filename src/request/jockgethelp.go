@@ -6,12 +6,13 @@ import (
 )
 
 type Response struct {
-	Error    bool   `json:"error"`
 	Category string `json:"category"`
 	Type     string `json:"type"`
 	Joke     string `json:"joke"`
 	Setup    string `json:"setup"`
 	Delivery string `json:"delivery"`
+	Lang     string `json:"lang"`
+	ID       int    `json:"id"`
 	Flags    struct {
 		Nsfw      bool `json:"nsfw"`
 		Religious bool `json:"religious"`
@@ -19,11 +20,10 @@ type Response struct {
 		Racist    bool `json:"racist"`
 		Sexist    bool `json:"sexist"`
 	} `json:"flags"`
-	ID   int    `json:"id"`
-	Lang string `json:"lang"`
+	Error bool `json:"error"`
 }
 
-func GetJock(route string) (string, error) {
+func GetJock(route string) (string,error) {
 
 	url := "https://sv443.net/jokeapi/v2/joke/"
 
@@ -38,7 +38,6 @@ func GetJock(route string) (string, error) {
 	}
 
 	defer resp.Body.Close()
-
 	r := Response{}
 
 	json.NewDecoder(resp.Body).Decode(&r)

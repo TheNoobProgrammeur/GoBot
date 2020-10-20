@@ -10,76 +10,81 @@ import (
 
 func Commande(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	listeCommande := []string{
-		"ping",
-		"CommandeListe",
-		"Fibonnacci",
-		"NewChanelText",
-		"NewChanelVoice"}
-
 	bID := os.Getenv("TOKEN_DISCORD")
 	if m.Author.ID == bID {
 		return
 	}
 
-	regxForComplexCommande := regexp.MustCompile("^(!\\S+) (.*)$")
-	regxForSimpleCommande := regexp.MustCompile("^!\\S+$")
+	regxForComplexCommand := regexp.MustCompile("^(!\\S+) (.*)$")
+	regxForSimpleCommand := regexp.MustCompile("^!\\S+$")
 
-	if regxForSimpleCommande.MatchString(m.Content) {
-		com := m.Content[1:]
-		switch com {
-		case "ping":
-			s.ChannelMessageSend(m.ChannelID, c.Ping())
-		case "CommandeListe":
-			liste := ""
-			for index, command := range listeCommande {
-				liste += "[" + strconv.Itoa(index) + "] " + command + "\n"
-			}
-			s.ChannelMessageSend(m.ChannelID, "liste (prefix = !) : \n"+liste)
-		}
+	if regxForSimpleCommand.MatchString(m.Content) {
+		SimpleCommand(s,m)
 	}
 
-	if regxForComplexCommande.MatchString(m.Content) {
-		groups := regxForComplexCommande.FindStringSubmatch(m.Content)
-		com := groups[1][1:]
-		param := groups[2]
-		switch com {
-		case "Fibonnacci":
-			number, err := strconv.Atoi(param)
-			if err != nil {
-				s.ChannelMessageSend(m.ChannelID, ":boom: Il faut entre un nombre pour la commande Fibonnacci")
-				return
-			}
-			s.ChannelMessageSend(m.ChannelID, strconv.Itoa(c.Fibonacci(number)))
-		case "NewChanelText":
-			s.ChannelMessageSend(m.ChannelID, "Creation du chanel textuel : "+param)
-			_, err := s.GuildChannelCreate(m.GuildID, param, 0)
-			if err != nil {
-				s.ChannelMessageSend(m.ChannelID, "Erreur dans la création du chanel")
-				return
-			}
-			s.ChannelMessageSend(m.ChannelID, "Chanel créé")
-		case "NewChanelVoice":
-			s.ChannelMessageSend(m.ChannelID, "Creation du chanel vocal : "+param)
-			_, err := s.GuildChannelCreate(m.GuildID, param, 2)
-			if err != nil {
-				s.ChannelMessageSend(m.ChannelID, "Erreur dans la création du chanel")
-				return
-			}
-			s.ChannelMessageSend(m.ChannelID, "Chanel créé")
-		case "Joke":
-			if param == "-h" {
-				s.ChannelMessageSend(m.ChannelID, "Liste des theme de blague : Any|Programming|Miscellaneous|Darck|Pun")
-				return
-			}
-			jocke, err := c.Jocke(param)
-			if err != nil {
-				s.ChannelMessageSend(m.ChannelID, err.Error())
-				return
-			}
-			s.ChannelMessageSend(m.ChannelID, "My jock : \n"+jocke)
-		}
-
+	if regxForComplexCommand.MatchString(m.Content) {
+		ComplexCommand(s,m,regxForComplexCommand)
 	}
+}
+func SimpleCommand(s *discordgo.Session, m *discordgo.MessageCreate)  {
 
+	listCommand := []string{
+		"ping",
+		"listCommand",
+		"Fibonacci",
+		"NewChanelText",
+		"NewChanelVoice"}
+
+	com := m.Content[1:]
+	switch com {
+	case "ping":
+		s.ChannelMessageSend(m.ChannelID, c.Ping())
+	case "listCommand":
+		list := ""
+		for index, command := range listCommand {
+			list += "[" + strconv.Itoa(index) + "] " + command + "\n"
+		}
+		s.ChannelMessageSend(m.ChannelID, "lite (prefix = !) : \n"+list)
+	}
+}
+func ComplexCommand(s *discordgo.Session, m *discordgo.MessageCreate,regxForComplexCommand *regexp.Regexp)  {
+	groups := regxForComplexCommand.FindStringSubmatch(m.Content)
+	com := groups[1][1:]
+	param := groups[2]
+	switch com {
+	case "Fibonacci":
+		number, err := strconv.Atoi(param)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, ":boom: Il faut entre un nombre pour la commande Fibonacci")
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, strconv.Itoa(c.Fibonacci(number)))
+	case "NewChanelText":
+		s.ChannelMessageSend(m.ChannelID, "Creation du chanel textuel : "+param)
+		_, err := s.GuildChannelCreate(m.GuildID, param, 0)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "Erreur dans la création du chanel")
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "Chanel créé")
+	case "NewChanelVoice":
+		s.ChannelMessageSend(m.ChannelID, "Creation du chanel vocal : "+param)
+		_, err := s.GuildChannelCreate(m.GuildID, param, 2)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "Erreur dans la création du chanel")
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "Chanel créé")
+	case "Joke":
+		if param == "-h" {
+			s.ChannelMessageSend(m.ChannelID, "Liste des theme de blague : Any|Programming|Miscellaneous|Darck|Pun")
+			return
+		}
+		jocke, err := c.Jocke(param)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, err.Error())
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "My jock : \n"+jocke)
+	}
 }
