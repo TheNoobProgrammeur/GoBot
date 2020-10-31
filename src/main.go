@@ -6,6 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
 	"myTest/src/bot"
+	"myTest/src/services"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,10 +22,12 @@ func main() {
 		godotenv.Load(".env")
 	}
 
+	dbservice := services.New()
+	dbservice.ConnectionBDD()
+
 	token := os.Getenv("TOKEN_DISCORD")
 
 	dg, err := discordgo.New("Bot " + token)
-
 	if err != nil {
 		panic(errors.New("Erreur dans la création du bot"))
 	}
@@ -45,6 +48,7 @@ func main() {
 	}
 
 	fmt.Println("Bot ", u.ID, "is running !")
+
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
