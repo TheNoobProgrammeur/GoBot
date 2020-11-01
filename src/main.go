@@ -16,15 +16,17 @@ func main() {
 
 	env := os.Getenv("ENV")
 
-	println(env)
-
-	if env == "dev" {
-		godotenv.Load(".env")
+	if env == "dev" || env == "" {
+		_ = godotenv.Load(".env")
 	}
+
 
 	dbservice := services.New()
 	dbservice.ConnectionBDD()
 	dbservice.MigrateBDD()
+
+	println(env)
+
 
 	token := os.Getenv("TOKEN_DISCORD")
 
@@ -34,11 +36,12 @@ func main() {
 	}
 
 	u, err := dg.User("@me")
-	os.Setenv("BOT_ID", u.ID)
 
 	if err != nil {
 		panic(errors.New("Erreur dans la recuperation de l'utilisateur"))
 	}
+
+	_ = os.Setenv("BOT_ID", u.ID)
 
 	err = dg.Open()
 
@@ -56,7 +59,7 @@ func main() {
 	<-sc
 
 	// Cleanly close down the Discord session.
-	dg.Close()
+	_ = dg.Close()
 	fmt.Println("Bot ", u.ID, "is stoping !")
 
 }
