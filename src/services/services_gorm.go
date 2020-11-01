@@ -43,7 +43,9 @@ func (s *serviceBDD) ConnectionBDD()  {
 	}
 }
 
-func (s *serviceBDD) MiggrationBDD(){
+func (s *serviceBDD) MigrateBDD(){
 	_ = s.db.AutoMigrate(&models.User{})
 }
-
+func (s *serviceBDD) GetDB() *gorm.DB {
+	return s.db
+}

@@ -24,6 +24,7 @@ func main() {
 
 	dbservice := services.New()
 	dbservice.ConnectionBDD()
+	dbservice.MigrateBDD()
 
 	token := os.Getenv("TOKEN_DISCORD")
 
