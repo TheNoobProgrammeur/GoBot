@@ -11,3 +11,11 @@ func TestFibonacci(t *testing.T) {
 		t.Errorf("Fibonacci(44) = %d; want 701408733", got)
 	}
 }
+
+
+func TestFibonacci93(t *testing.T) {
+	got := commands.Fibonacci(93)
+	if got != 12200160415121876738  {
+		t.Errorf("Fibonacci(44) = %d; want 12200160415121876738 ", got)
+	}
+}

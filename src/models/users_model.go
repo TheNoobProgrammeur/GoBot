@@ -6,5 +6,5 @@ type User struct {
 	gorm.Model
 	Name         string
 	DiscordNumber string
-	NbPing		int
+	PingList []Ping `gorm:"foreignKey:UserId"`
 }

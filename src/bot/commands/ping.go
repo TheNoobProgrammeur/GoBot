@@ -20,12 +20,11 @@ func updateUser(idUser string, username string)   {
 		user = models.User{
 			DiscordNumber: idUser,
 			Name: username,
-			NbPing: 1,
-		}
-	} else {
-		user.NbPing++
-	}
 
+		}
+	}
+	ping := models.Ping{}
+	user.PingList = append(user.PingList,ping )
 	dbservice.GetDB().Save(&user)
 
 }

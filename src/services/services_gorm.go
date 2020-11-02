@@ -44,7 +44,10 @@ func (s *serviceBDD) ConnectionBDD()  {
 }
 
 func (s *serviceBDD) MigrateBDD(){
-	_ = s.db.AutoMigrate(&models.User{})
+	_ = s.db.AutoMigrate(
+		&models.User{},
+		&models.Ping{},
+		&models.Fibonacci{})
 }
 func (s *serviceBDD) GetDB() *gorm.DB {
 	return s.db

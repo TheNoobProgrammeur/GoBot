@@ -58,7 +58,14 @@ func ComplexCommand(s *discordgo.Session, m *discordgo.MessageCreate,regxForComp
 			s.ChannelMessageSend(m.ChannelID, ":boom: Il faut entre un nombre pour la commande Fibonacci")
 			return
 		}
-		s.ChannelMessageSend(m.ChannelID, strconv.Itoa(c.Fibonacci(number)))
+
+		number64 := uint64 (number)
+		if number64 >= 93 {
+			s.ChannelMessageSend(m.ChannelID, "Desolé c'est trop gros .... plaigné vous a postgresql ")
+			return
+		}
+
+		s.ChannelMessageSend(m.ChannelID, strconv.FormatUint(c.Fibonacci(number64), 10))
 	case "NewChanelText":
 		s.ChannelMessageSend(m.ChannelID, "Creation du chanel textuel : "+param)
 		_, err := s.GuildChannelCreate(m.GuildID, param, 0)
