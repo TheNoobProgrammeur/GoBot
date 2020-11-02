@@ -3,8 +3,6 @@ package bot
 import (
 	"github.com/bwmarrin/discordgo"
 	c "myTest/src/bot/commands"
-	"myTest/src/models"
-	"myTest/src/services"
 	"os"
 	"regexp"
 	"strconv"
@@ -39,33 +37,14 @@ func SimpleCommand(s *discordgo.Session, m *discordgo.MessageCreate)  {
 
 	com := m.Content[1:]
 	switch com {
-	case "ping":
-		dbservice := services.New()
-
-		user := models.User{}
-
-		dbservice.GetDB().Where("discord_number = ?",m.Author.ID).First(&user)
-
-		if user.Name == "" {
-			user = models.User{
-				DiscordNumber: m.Author.ID,
-				Name: m.Author.Username,
-				NbPing: 1,
-			}
-		} else {
-			user.NbPing++
-
-		}
-
-		dbservice.GetDB().Save(&user)
-
-		s.ChannelMessageSend(m.ChannelID, c.Ping())
 	case "listCommand":
 		list := ""
 		for index, command := range listCommand {
 			list += "[" + strconv.Itoa(index) + "] " + command + "\n"
 		}
 		s.ChannelMessageSend(m.ChannelID, "lite (prefix = !) : \n"+list)
+	case "ping":
+		s.ChannelMessageSend(m.ChannelID, c.Ping(*m.Author))
 	}
 }
 func ComplexCommand(s *discordgo.Session, m *discordgo.MessageCreate,regxForComplexCommand *regexp.Regexp)  {
